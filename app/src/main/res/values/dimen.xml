@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="ivWeatherConditionHeight">200dp</dimen>
+    <dimen name="ivWeatherConditionWidth">200dp</dimen>
+    <dimen name="marginDefault">11dp</dimen>
+    <dimen name="marginNormal">16dp</dimen>
+</resources>
