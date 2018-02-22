@@ -12,16 +12,18 @@ import java.util.ArrayList;
 
 import eficode.fi.weatherapp.R;
 import eficode.fi.weatherapp.entity.LocationInfo;
+import eficode.fi.weatherapp.interfaces.IOnItemClickListener;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder> {
     private ArrayList<LocationInfo> locationInfoArrayList;
     private int[] listItemBackground;
     private Context context;
+    private IOnItemClickListener iOnItemClickListener;
 
-
-    public RecyclerViewAdapter(Context context, ArrayList<LocationInfo> locationDataArrayList) {
+    public RecyclerViewAdapter(Context context, ArrayList<LocationInfo> locationDataArrayList, IOnItemClickListener iOnItemClickListener) {
         this.locationInfoArrayList = locationDataArrayList;
         this.context = context;
+        this.iOnItemClickListener = iOnItemClickListener;
         listItemBackground = new int[]{R.drawable.dark_list_background,
                 R.drawable.light_list_background};
     }
@@ -44,13 +46,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.itemView.setBackground(drawable);
 
         holder.tvCityName.setText(locationInfoArrayList.get(position).getLocationName());
-        holder.ibDeleteCities.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                System.out.print("kanjar");
-                //handle the click here.
-            }
-        });
+
     }
 
     /*Creates the view for recycler view*/
@@ -59,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
         ViewGroup mViewGroup = (ViewGroup) layoutInflater.inflate(
                 R.layout.cities_recyclerview_item, viewGroup, false);
-        return new RecyclerViewHolder(mViewGroup);
+        return new RecyclerViewHolder(mViewGroup, iOnItemClickListener);
     }
 
 }

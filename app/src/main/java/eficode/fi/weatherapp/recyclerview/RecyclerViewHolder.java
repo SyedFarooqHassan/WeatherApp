@@ -13,17 +13,22 @@ public class RecyclerViewHolder extends RecyclerView.ViewHolder  {
     public TextView tvCityName;
     public ImageButton ibDeleteCities;
 
-    public RecyclerViewHolder(@NonNull View view) {
+    public RecyclerViewHolder(@NonNull View view, final IOnItemClickListener iOnItemClickListener) {
         super(view);
         tvCityName = view.findViewById(R.id.tv_city_name);
         ibDeleteCities = view.findViewById(R.id.ib_delete_cities);
-        ibDeleteCities.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                System.out.print("kanjar");
+            public void onClick(View v) {
+                iOnItemClickListener.onItemClick(v, getAdapterPosition());
             }
         });
-
+        ibDeleteCities.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iOnItemClickListener.onItemClick(v, getAdapterPosition());
+            }
+        });
     }
 
 

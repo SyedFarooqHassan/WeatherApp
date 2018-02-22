@@ -1,13 +1,15 @@
 package eficode.fi.weatherapp;
 
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 
 import com.google.android.gms.common.api.Status;
@@ -19,13 +21,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import eficode.fi.weatherapp.async.AsyncCheckDbId;
+import eficode.fi.weatherapp.async.AsyncDeleteDbData;
 import eficode.fi.weatherapp.async.AsyncGetDbData;
 import eficode.fi.weatherapp.async.AsyncInsertDbData;
 import eficode.fi.weatherapp.entity.LocationInfo;
 import eficode.fi.weatherapp.interfaces.IOnItemClickListener;
 import eficode.fi.weatherapp.interfaces.IResponseHelper;
 import eficode.fi.weatherapp.recyclerview.RecyclerViewAdapter;
-import eficode.fi.weatherapp.recyclerview.RecyclerViewClickListener;
 
 public class AddCityActivity extends AppCompatActivity implements PlaceSelectionListener, IOnItemClickListener {
 
@@ -33,6 +35,7 @@ public class AddCityActivity extends AppCompatActivity implements PlaceSelection
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<LocationInfo> locationInfoArrayList;
+    private DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +47,7 @@ public class AddCityActivity extends AppCompatActivity implements PlaceSelection
 
     private void initializeObj() {
         locationInfoArrayList = new ArrayList<>();
-        recyclerViewAdapter = new RecyclerViewAdapter(this, locationInfoArrayList);
+        recyclerViewAdapter = new RecyclerViewAdapter(this, locationInfoArrayList, this);
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         AsyncGetDbData asyncGetDbData = new AsyncGetDbData(new IResponseHelper() {
@@ -59,6 +62,25 @@ public class AddCityActivity extends AppCompatActivity implements PlaceSelection
             }
         });
         asyncGetDbData.execute();
+        dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.list_divider);
+        dividerItemDecoration.setDrawable(drawable);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        switch (view.getId()){
+            case R.id.ib_delete_cities:
+                new AsyncDeleteDbData().execute(locationInfoArrayList.get(position).getLocationId());
+                locationInfoArrayList.remove(locationInfoArrayList.get(position));
+                recyclerViewAdapter.notifyDataSetChanged();
+                break;
+            case R.id.rl_city_info:
+                System.out.print("kanjar");
+                break;
+        }
 
     }
 
@@ -66,17 +88,6 @@ public class AddCityActivity extends AppCompatActivity implements PlaceSelection
         PlaceAutocompleteFragment placeAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.fragment_place_autocomplete);
         placeAutocompleteFragment.setOnPlaceSelectedListener(this);
         recyclerView = findViewById(R.id.rv_cities);
-        recyclerView.addOnItemTouchListener(new RecyclerViewClickListener(this,recyclerView,this));
-    }
-
-    @Override
-    public void onItemClick(View view, int position) {
-
-    }
-
-    @Override
-    public void onLongItemClick(View view, int position) {
-
     }
 
 

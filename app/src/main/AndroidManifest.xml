@@ -26,7 +26,6 @@
         </activity>
         <activity
             android:name=".AddCityActivity"
-            android:launchMode="singleTop"
             android:screenOrientation="portrait">
         </activity>
 

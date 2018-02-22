@@ -12,7 +12,7 @@
     
     <dimen name="citiesListItemLayoutHeight">150dp</dimen>
 
-    <dimen name="dividerHeight">18dp</dimen>
+    <dimen name="dividerHeight">26dp</dimen>
 
     <dimen name="cityListTvSize">15sp</dimen>
 </resources>
