@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/citiesListItemLayoutHeight">
+
+    <ImageButton
+        android:id="@+id/ib_delete_cities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="end|top"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:padding="@dimen/paddingDefault" />
+
+    <TextView
+        android:id="@+id/tv_city_name"
+        style="@style/TextAppearance.AppCompat.Body2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="@dimen/cityListTvSize" />
+
+</RelativeLayout>

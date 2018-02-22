@@ -2,6 +2,17 @@
 <resources>
     <dimen name="ivWeatherConditionHeight">200dp</dimen>
     <dimen name="ivWeatherConditionWidth">200dp</dimen>
+
     <dimen name="marginDefault">11dp</dimen>
     <dimen name="marginNormal">16dp</dimen>
+
+    <dimen name="paddingDefault">15dp</dimen>
+    <dimen name="paddingNormal">25dp</dimen>
+    <dimen name="paddingLarge">35dp</dimen>
+    
+    <dimen name="citiesListItemLayoutHeight">150dp</dimen>
+
+    <dimen name="dividerHeight">18dp</dimen>
+
+    <dimen name="cityListTvSize">15sp</dimen>
 </resources>

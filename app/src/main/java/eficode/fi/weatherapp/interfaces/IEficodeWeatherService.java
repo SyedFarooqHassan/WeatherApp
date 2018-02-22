@@ -6,7 +6,7 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
 
-public interface IApiWeatherService {
+public interface IEficodeWeatherService {
     @GET("/api/forecast")
     Call<GetForecast> getForecast(@Query("lat") double latitude,
                                   @Query("lon") double longitude);

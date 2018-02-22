@@ -1,7 +1,6 @@
 package eficode.fi.weatherapp;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements ILocationHelper, 
     private TextView tvWeatherDescription;
     private ProgressBar pgWeatherLoading;
     private FloatingActionButton fbAddCities;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements ILocationHelper, 
     }
     @Override
     public void onLocationChanged(final Location location) {
-        ApiRequest.getForecast(location, new IResponseHelper() {
+        EficodeApiRequest.getForecast(location, new IResponseHelper() {
             @Override
             public void getData(final Object object) {
                 final GetForecast getForecast = (GetForecast) object;
