@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,10 +22,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import eficode.fi.weatherapp.common.Extra;
 import eficode.fi.weatherapp.data.GetForecast;
 import eficode.fi.weatherapp.interfaces.ILocationHelper;
 import eficode.fi.weatherapp.interfaces.IResponseHelper;
+import eficode.fi.weatherapp.slidingtab.SlidingTabsBasicFragment;
 
 public class MainActivity extends AppCompatActivity implements ILocationHelper, View.OnClickListener {
     private GpsChecker gpsChecker;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ILocationHelper, 
     private TextView tvWeatherDescription;
     private ProgressBar pgWeatherLoading;
     private FloatingActionButton fbAddCities;
+    private ArrayList<GetForecast> getForecastArrayList;
 
 
 
@@ -42,26 +47,33 @@ public class MainActivity extends AppCompatActivity implements ILocationHelper, 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        if (savedInstanceState == null) {
+//            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+//            SlidingTabsBasicFragment slidingTabsBasicFragment = new SlidingTabsBasicFragment();
+//            fragmentTransaction.replace(R.id.fl_fragment,slidingTabsBasicFragment);
+//            fragmentTransaction.commit();
+//        }
         initializeUI();
         initializeObj();
-        askForLocationPermission();
+        //askForLocationPermission();
     }
 
     private void initializeUI() {
-        ivWeatherCondition = findViewById(R.id.iv_weather_condition);
-        ivWeatherCondition.setVisibility(View.INVISIBLE);
-        tvWeatherDescription = findViewById(R.id.tv_weather_description);
-        tvWeatherDescription.setVisibility(View.INVISIBLE);
+//        ivWeatherCondition = findViewById(R.id.iv_weather_condition);
+//        ivWeatherCondition.setVisibility(View.INVISIBLE);
+//        tvWeatherDescription = findViewById(R.id.tv_weather_description);
+//        tvWeatherDescription.setVisibility(View.INVISIBLE);
         pgWeatherLoading = findViewById(R.id.pb_weather_loading);
-        fbAddCities = findViewById(R.id.fb_add_cities);
-        fbAddCities.setVisibility(View.INVISIBLE);
-        fbAddCities.setOnClickListener(this);
+//        fbAddCities = findViewById(R.id.fb_add_cities);
+//        fbAddCities.setVisibility(View.INVISIBLE);
+//        fbAddCities.setOnClickListener(this);
     }
 
     private void initializeObj() {
         gpsChecker = new GpsChecker(MainActivity.this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener(this);
+        getForecastArrayList = new ArrayList<>();
     }
 
     @Override
@@ -177,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements ILocationHelper, 
             @Override
             public void getData(final Object object) {
                 final GetForecast getForecast = (GetForecast) object;
+                getForecastArrayList.add(getForecast);
                 setVisibility();
                 tvWeatherDescription.setText(getForecast.getDescription());
                 Uri uri = Uri.parse(Extra.IMAGE_URL + getForecast.getIcon() + Extra.IMAGE_FORMAT);

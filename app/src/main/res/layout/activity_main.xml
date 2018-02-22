@@ -7,21 +7,10 @@
     android:orientation="vertical"
     tools:context="eficode.fi.weatherapp.MainActivity">
 
-
-    <ImageView
-        android:id="@+id/iv_weather_condition"
-        android:layout_width="@dimen/ivWeatherConditionWidth"
-        android:layout_height="@dimen/ivWeatherConditionHeight"
-        android:layout_gravity="center|top"
-        android:layout_margin="@dimen/marginDefault" />
-
-    <TextView
-        android:id="@+id/tv_weather_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerInParent="true"
-        android:layout_gravity="center" />
+    <FrameLayout
+        android:id="@+id/fl_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ProgressBar
         android:id="@+id/pb_weather_loading"

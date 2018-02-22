@@ -3,6 +3,7 @@ package eficode.fi.weatherapp;
 import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import eficode.fi.weatherapp.entity.LocationInfo;
 import eficode.fi.weatherapp.interfaces.IOnItemClickListener;
 import eficode.fi.weatherapp.interfaces.IResponseHelper;
 import eficode.fi.weatherapp.recyclerview.RecyclerViewAdapter;
+import eficode.fi.weatherapp.slidingtab.SlidingTabsBasicFragment;
 
 public class AddCityActivity extends AppCompatActivity implements PlaceSelectionListener, IOnItemClickListener {
 
@@ -35,7 +37,6 @@ public class AddCityActivity extends AppCompatActivity implements PlaceSelection
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
     private ArrayList<LocationInfo> locationInfoArrayList;
-    private DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,11 +63,6 @@ public class AddCityActivity extends AppCompatActivity implements PlaceSelection
             }
         });
         asyncGetDbData.execute();
-        dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
-        Drawable drawable = ContextCompat.getDrawable(this, R.drawable.list_divider);
-        dividerItemDecoration.setDrawable(drawable);
-        recyclerView.addItemDecoration(dividerItemDecoration);
-
     }
 
     @Override
