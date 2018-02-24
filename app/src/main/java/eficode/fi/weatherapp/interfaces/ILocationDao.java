@@ -20,8 +20,9 @@ public interface ILocationDao {
     @Query("SELECT * FROM LocationInfo")
     List<LocationInfo> getAll();
 
+
     @Query("Select * from LocationInfo where locationId = :locationId")
-    List<LocationInfo> checkIdAlreadyExists(String locationId);
+    LocationInfo getDataWithId(String locationId);
 
     @Query("Delete from LocationInfo where locationId = :locationId")
     void deleteId(String locationId);

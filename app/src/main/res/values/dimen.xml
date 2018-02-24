@@ -4,15 +4,18 @@
     <dimen name="ivWeatherConditionWidth">200dp</dimen>
 
     <dimen name="marginDefault">11dp</dimen>
-    <dimen name="marginNormal">16dp</dimen>
+    <dimen name="marginNormal">22dp</dimen>
+    <dimen name="marginLarge">33dp</dimen>
 
     <dimen name="paddingDefault">15dp</dimen>
     <dimen name="paddingNormal">25dp</dimen>
     <dimen name="paddingLarge">35dp</dimen>
     
-    <dimen name="citiesListItemLayoutHeight">150dp</dimen>
+    <dimen name="citiesListItemLayoutHeight">48dp</dimen>
 
     <dimen name="dividerHeight">26dp</dimen>
 
     <dimen name="cityListTvSize">15sp</dimen>
+
+    <dimen name="floatingButtonMargin">16dp</dimen>
 </resources>

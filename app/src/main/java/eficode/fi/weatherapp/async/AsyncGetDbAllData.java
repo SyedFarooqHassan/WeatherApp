@@ -10,10 +10,10 @@ import eficode.fi.weatherapp.WeatherApplication;
 import eficode.fi.weatherapp.entity.LocationInfo;
 import eficode.fi.weatherapp.interfaces.IResponseHelper;
 
-public class AsyncGetDbData extends AsyncTask<LocationInfo, Void, List<LocationInfo>> {
+public class AsyncGetDbAllData extends AsyncTask<LocationInfo, Void, List<LocationInfo>> {
     private IResponseHelper iResponseHelper;
 
-    public AsyncGetDbData(IResponseHelper iResponseHelper) {
+    public AsyncGetDbAllData(IResponseHelper iResponseHelper) {
         this.iResponseHelper = iResponseHelper;
     }
 

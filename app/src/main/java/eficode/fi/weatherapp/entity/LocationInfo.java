@@ -5,13 +5,26 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
+
 @Entity
-public class LocationInfo {
+public class LocationInfo implements Serializable {
     @NonNull
     @PrimaryKey
     private String locationId;
 
-    @ColumnInfo(name = "locationName")
+    public LocationInfo() {
+
+    }
+
+    public LocationInfo(@NonNull String locationId, String locationName, double latitude, double longitude) {
+        this.locationId = locationId;
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    @ColumnInfo(name = "location_name")
     private String locationName;
 
     @ColumnInfo(name = "latitude")
@@ -19,7 +32,6 @@ public class LocationInfo {
 
     @ColumnInfo(name = "longitude")
     private double longitude;
-
 
     public String getLocationId() {
         return locationId;

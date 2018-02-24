@@ -1,202 +1,116 @@
 package eficode.fi.weatherapp;
 
-import android.Manifest;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
-import android.net.Uri;
-import android.os.Build;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
 import java.util.ArrayList;
 
+import eficode.fi.weatherapp.adapter.RecyclerViewAdapter;
+import eficode.fi.weatherapp.async.AsyncCheckDbId;
+import eficode.fi.weatherapp.async.AsyncDeleteDbData;
+import eficode.fi.weatherapp.async.AsyncGetDbAllData;
+import eficode.fi.weatherapp.async.AsyncInsertDbData;
 import eficode.fi.weatherapp.common.Extra;
-import eficode.fi.weatherapp.data.GetForecast;
-import eficode.fi.weatherapp.interfaces.ILocationHelper;
+import eficode.fi.weatherapp.entity.LocationInfo;
+import eficode.fi.weatherapp.interfaces.IOnItemClickListener;
 import eficode.fi.weatherapp.interfaces.IResponseHelper;
-import eficode.fi.weatherapp.slidingtab.SlidingTabsBasicFragment;
 
-public class MainActivity extends AppCompatActivity implements ILocationHelper, View.OnClickListener {
-    private GpsChecker gpsChecker;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-
-    private ImageView ivWeatherCondition;
-    private TextView tvWeatherDescription;
-    private ProgressBar pgWeatherLoading;
-    private FloatingActionButton fbAddCities;
-    private ArrayList<GetForecast> getForecastArrayList;
-
-
+public class MainActivity extends AppCompatActivity implements PlaceSelectionListener, IOnItemClickListener {
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter recyclerViewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        if (savedInstanceState == null) {
-//            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-//            SlidingTabsBasicFragment slidingTabsBasicFragment = new SlidingTabsBasicFragment();
-//            fragmentTransaction.replace(R.id.fl_fragment,slidingTabsBasicFragment);
-//            fragmentTransaction.commit();
-//        }
         initializeUI();
-        initializeObj();
-        //askForLocationPermission();
+        initializeData();
     }
 
-    private void initializeUI() {
-//        ivWeatherCondition = findViewById(R.id.iv_weather_condition);
-//        ivWeatherCondition.setVisibility(View.INVISIBLE);
-//        tvWeatherDescription = findViewById(R.id.tv_weather_description);
-//        tvWeatherDescription.setVisibility(View.INVISIBLE);
-        pgWeatherLoading = findViewById(R.id.pb_weather_loading);
-//        fbAddCities = findViewById(R.id.fb_add_cities);
-//        fbAddCities.setVisibility(View.INVISIBLE);
-//        fbAddCities.setOnClickListener(this);
-    }
+    private void initializeData() {
+        recyclerViewAdapter = new RecyclerViewAdapter(this, this);
+        recyclerView.setAdapter(recyclerViewAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-    private void initializeObj() {
-        gpsChecker = new GpsChecker(MainActivity.this);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener(this);
-        getForecastArrayList = new ArrayList<>();
+        final LocationInfo currentLocationInfo = new LocationInfo();
+        currentLocationInfo.setLocationName(getString(R.string.current_location));
+
+        recyclerViewAdapter.add(currentLocationInfo);
+
+        AsyncGetDbAllData asyncGetDbData = new AsyncGetDbAllData(new IResponseHelper() {
+            @Override
+            public void getData(Object object) {
+                recyclerViewAdapter.addAll((ArrayList<LocationInfo>) object);
+            }
+        });
+        asyncGetDbData.execute();
     }
 
     @Override
-    public void onClick(View view) {
+    public void onItemClick(View view, final Object object) {
+        final LocationInfo locationInfo = (LocationInfo) object;
         switch (view.getId()) {
-            case R.id.fb_add_cities:
-                Intent intent = new Intent(MainActivity.this,AddCityActivity.class);
+            case R.id.ib_delete_cities:
+                new AsyncDeleteDbData().execute(locationInfo.getLocationId());
+                recyclerViewAdapter.remove(locationInfo);
+                break;
+            case R.id.rl_city_info:
+                Intent intent = new Intent(MainActivity.this, WeatherViewerActivity.class);
+                intent.putExtra(Extra.LOCATION_INFO_LIST, (ArrayList) recyclerViewAdapter.getLocationInfoList());
+                intent.putExtra(Extra.LOCATION_INFO, locationInfo);
                 startActivity(intent);
                 break;
         }
     }
 
-    /*asks for permission of location*/
-    private void askForLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            //this code will be executed on devices running on DONUT (NOT ICS) or later
-            askForPermission(Manifest.permission.ACCESS_FINE_LOCATION, Extra.LOCATION);
-        }
+    private void initializeUI() {
+        PlaceAutocompleteFragment placeAutocompleteFragment = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.fragment_place_autocomplete);
+        placeAutocompleteFragment.setOnPlaceSelectedListener(this);
+        recyclerView = findViewById(R.id.rv_cities);
     }
 
-    public void getLocation() {
-        try {
-            boolean isGpsOn = gpsChecker.CheckStatus();
-            if (isGpsOn) {
-                locationManager.requestLocationUpdates(LocationManager
-                        .GPS_PROVIDER, Extra.MIN_TIME, Extra.MIN_DISTANCE, locationListener); //set after how much distance and time you will get location
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
-        }
-    }
 
-    public void askForPermission(@NonNull String permission, @NonNull Integer requestCode) {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                //This is called if user has denied the permission before
-                //In this case I am just asking the permission again
-                ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-            } else {
-                ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-            }
-        } else if (requestCode == Extra.LOCATION) {
-            getLocation();
-        }
-    }
-
-    /*what happens if user grants location or clicks never ask again*/
     @Override
-    public void onRequestPermissionsResult(@NonNull int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (permissions.length == 0) {
-            return;
-        }
-        boolean allPermissionsGranted = true;
-        if (grantResults.length > 0) {
-            for (int grantResult : grantResults) {
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    allPermissionsGranted = false;
-                    break;
-                }
-            }
-        }
-        if (!allPermissionsGranted) {
-            boolean somePermissionsForeverDenied = false;
-            for (String permission : permissions) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-                    //denied
-                } else {
-                    if (ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
-                            && requestCode == Extra.LOCATION) {
-                        getLocation();
-                    } else {
-                        //set to never ask again
-                        somePermissionsForeverDenied = true;
-                    }
-                }
-            }
-            if (somePermissionsForeverDenied) {
-                final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-                alertDialogBuilder.setTitle(R.string.permissions_required)
-                        .setMessage(R.string.you_have_explicitly_denied_permissions_which_are_required_by_this_app_to_run_for_this_action_open_settings_go_to_permissions_and_allow_them)
-                        .setPositiveButton(R.string.settings, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.fromParts(Extra.PACKAGE, getPackageName(), null));
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .setCancelable(false)
-                        .create()
-                        .show();
-            }
-        } else if (requestCode == Extra.LOCATION) {
-            getLocation();
-        }
-    }
-    public void setVisibility(){
-        pgWeatherLoading.setVisibility(View.INVISIBLE);
-        ivWeatherCondition.setVisibility(View.VISIBLE);
-        tvWeatherDescription.setVisibility(View.VISIBLE);
-        fbAddCities.setVisibility(View.VISIBLE);
-    }
-    @Override
-    public void onLocationChanged(final Location location) {
-        EficodeApiRequest.getForecast(location, new IResponseHelper() {
+    public void onPlaceSelected(final Place place) {
+        new AsyncCheckDbId(new IResponseHelper() {
             @Override
-            public void getData(final Object object) {
-                final GetForecast getForecast = (GetForecast) object;
-                getForecastArrayList.add(getForecast);
-                setVisibility();
-                tvWeatherDescription.setText(getForecast.getDescription());
-                Uri uri = Uri.parse(Extra.IMAGE_URL + getForecast.getIcon() + Extra.IMAGE_FORMAT);
-                WeatherApplication.getInstance().getRequestBuilderPictureDrawable()
-                        .load(uri).into(ivWeatherCondition);
+            public void getData(Object object) {
+                LocationInfo locationInfo = (LocationInfo) object;
+                if (locationInfo != null) {
+                    createDialog();
+                } else {
+                    locationInfo = new LocationInfo(place.getId(), place.getName().toString(), place.getLatLng().latitude, place.getLatLng().longitude);
+                    new AsyncInsertDbData().execute(locationInfo);
+                    recyclerViewAdapter.add(locationInfo);
+                }
 
             }
-        });
+        }).execute(place.getId());
+    }
+
+
+    @Override
+    public void onError(Status status) {
+        // TODO: Handle the error.
+    }
+
+    public void createDialog() {
+        new AlertDialog.Builder(this).setTitle(R.string.already_present).setMessage(R.string.clicked_city_is_already_present_in_added_cities).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        }).create().show();
     }
 }

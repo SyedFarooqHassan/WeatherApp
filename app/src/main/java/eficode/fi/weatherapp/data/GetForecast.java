@@ -1,10 +1,23 @@
 package eficode.fi.weatherapp.data;
 
-public class GetForecast {
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class GetForecast implements Serializable {
     private long id;
     private String main;
     private String description;
     private String icon;
+    private String locationName;
+
+    public String getLocationName() {
+        return locationName;
+    }
+
+    public void setLocationName(String locationName) {
+        this.locationName = locationName;
+    }
 
     public long getId() {
         return id;
