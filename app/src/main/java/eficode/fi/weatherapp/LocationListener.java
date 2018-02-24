@@ -15,7 +15,7 @@ public class LocationListener implements android.location.LocationListener {
 
     @Override
     public void onLocationChanged(@NonNull Location location) {
-        iLocationHelper.onLocationChanged(location);
+        iLocationHelper.onLocationChanged(location.getLatitude(), location.getLongitude());
     }
 
     @Override

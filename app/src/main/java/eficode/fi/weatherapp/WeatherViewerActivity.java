@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import eficode.fi.weatherapp.adapter.LocationFragmentPagerAdapter;
 import eficode.fi.weatherapp.common.Extra;
@@ -35,11 +36,17 @@ public class WeatherViewerActivity extends AppCompatActivity {
     }
 
     private void initializeData() {
+        final List<LocationInfo> locationInfoList = (ArrayList<LocationInfo>) getIntent().getSerializableExtra(Extra.LOCATION_INFO_LIST);
         final LocationFragmentPagerAdapter locationFragmentPagerAdapter = new LocationFragmentPagerAdapter(getSupportFragmentManager());
-        locationFragmentPagerAdapter.addAll((ArrayList<LocationInfo>) getIntent().getSerializableExtra(Extra.LOCATION_INFO_LIST));
+        locationFragmentPagerAdapter.addAll(locationInfoList);
 
         viewPager.setAdapter(locationFragmentPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+
+        final int selectedIndex = getIntent().getIntExtra(Extra.LOCATION_INFO_SELECTED_INDEX, -1);
+        if (selectedIndex != -1) {
+            viewPager.setCurrentItem(selectedIndex, true);
+        }
     }
 
     @Override

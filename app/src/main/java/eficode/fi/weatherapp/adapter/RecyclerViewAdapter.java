@@ -56,7 +56,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         recyclerViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                iOnItemClickListener.onItemClick(v, locationInfoList.get(recyclerViewHolder.getAdapterPosition()));
+                iOnItemClickListener.onItemClick(v, recyclerViewHolder.getAdapterPosition());
             }
         });
 

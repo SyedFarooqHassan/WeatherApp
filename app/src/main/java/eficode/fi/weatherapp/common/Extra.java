@@ -15,5 +15,6 @@ public abstract class Extra {
     public static final String LOCATION_PROVIDER = "googelProvider";
 
     public static final String LOCATION_INFO_LIST = "LOCATION_INFO_LIST";
+    public static final String LOCATION_INFO_SELECTED_INDEX = "LOCATION_INFO_SELECTED_INDEX";
     public static final String LOCATION_INFO = "LOCATION_INFO";
 }

@@ -59,16 +59,16 @@ public class MainActivity extends AppCompatActivity implements PlaceSelectionLis
 
     @Override
     public void onItemClick(View view, final Object object) {
-        final LocationInfo locationInfo = (LocationInfo) object;
         switch (view.getId()) {
             case R.id.ib_delete_cities:
+                final LocationInfo locationInfo = (LocationInfo) object;
                 new AsyncDeleteDbData().execute(locationInfo.getLocationId());
                 recyclerViewAdapter.remove(locationInfo);
                 break;
             case R.id.rl_city_info:
                 Intent intent = new Intent(MainActivity.this, WeatherViewerActivity.class);
                 intent.putExtra(Extra.LOCATION_INFO_LIST, (ArrayList) recyclerViewAdapter.getLocationInfoList());
-                intent.putExtra(Extra.LOCATION_INFO, locationInfo);
+                intent.putExtra(Extra.LOCATION_INFO_SELECTED_INDEX, (int) object);
                 startActivity(intent);
                 break;
         }
