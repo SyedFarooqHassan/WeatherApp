@@ -34,9 +34,9 @@ public class LocationFragment extends Fragment implements ILocationHelper {
 
     private TextView tvLocationName;
     private ImageView ivWeatherCondition;
-    private TextView description;
+    private TextView tvdescription;
 
-    private ProgressBar progressBar;
+    private ProgressBar pbWeatherLoading;
 
     private GpsChecker gpsChecker;
     private LocationManager locationManager;
@@ -110,15 +110,15 @@ public class LocationFragment extends Fragment implements ILocationHelper {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.pager_item, container, false);
+        View view = inflater.inflate(R.layout.fragment_item, container, false);
 
         tvLocationName = view.findViewById(R.id.tv_location_name);
         tvLocationName.setText(locationInfo.getLocationName());
 
         ivWeatherCondition = view.findViewById(R.id.iv_weather_condition);
-        description = view.findViewById(R.id.tv_weather_description);
+        tvdescription = view.findViewById(R.id.tv_weather_description);
 
-        progressBar = view.findViewById(R.id.pb_weather_loading);
+        pbWeatherLoading = view.findViewById(R.id.pb_weather_loading);
 
         return view;
     }
@@ -142,15 +142,15 @@ public class LocationFragment extends Fragment implements ILocationHelper {
                 WeatherApplication.getInstance().getRequestBuilderPictureDrawable()
                         .load(uri).into(ivWeatherCondition);
 
-                description.setText(getForecast.getDescription());
-                progressBar.setVisibility(View.GONE);
+                tvdescription.setText(getForecast.getDescription());
+                pbWeatherLoading.setVisibility(View.GONE);
             }
         });
     }
 
     @Override
     public void onDestroy() {
-        if(locationManager != null && locationListener != null){
+        if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
         super.onDestroy();
