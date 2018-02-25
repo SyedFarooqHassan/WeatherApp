@@ -9,7 +9,7 @@ import eficode.fi.weatherapp.entity.LocationInfo;
 import eficode.fi.weatherapp.interfaces.IResponseHelper;
 
 
-public class AsyncCheckDbId extends AsyncTask<String, Void, List<LocationInfo>> {
+public class AsyncCheckDbId extends AsyncTask<String, Void, LocationInfo> {
     IResponseHelper iResponseHelper;
 
     public AsyncCheckDbId(IResponseHelper iResponseHelper) {
@@ -17,13 +17,13 @@ public class AsyncCheckDbId extends AsyncTask<String, Void, List<LocationInfo>> 
     }
 
     @Override
-    protected List<LocationInfo> doInBackground(String... params) {
+    protected LocationInfo doInBackground(String... params) {
         String id = params[0];
-        return WeatherApplication.getInstance().getAppDatabase().iLocationDao().checkIdAlreadyExists(id);
+        return WeatherApplication.getInstance().getAppDatabase().iLocationDao().getDataWithId(id);
     }
 
     @Override
-    protected void onPostExecute(List<LocationInfo> result) {
+    protected void onPostExecute(LocationInfo result) {
         iResponseHelper.getData(result);
 
     }
